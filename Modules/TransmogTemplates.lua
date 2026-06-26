@@ -1352,13 +1352,26 @@ local function ApplyOutfit(outfit)
 	end
 end
 
-local function getSourceSlots(data)
+local function pickCollectedSourceID(slotSources)
+	for _, source in ipairs(slotSources) do
+		if source.isCollected then
+			return source.sourceID
+		end
+	end
+end
+
+local function getSourceSlots(data, setID)
 	local sources = {}
 	for _index, primaryAppearance in pairs(data) do
-		local sourceInfo = C_TransmogCollection.GetSourceInfo(primaryAppearance.appearanceID);
-		local categoryID = sourceInfo.invType-1
-		sources[categoryID] =primaryAppearance.appearanceID
-
+		local sourceInfo = C_TransmogCollection.GetSourceInfo(primaryAppearance.appearanceID)
+		if sourceInfo then
+			local slot = C_Transmog.GetSlotForInventoryType(sourceInfo.invType)
+			local chosen = primaryAppearance.appearanceID
+			if setID then
+				chosen = pickCollectedSourceID(C_TransmogSets.GetSourcesForSlot(setID, slot) or {}) or chosen
+			end
+			sources[slot] = chosen
+		end
 	end
 	return sources
 end
@@ -1457,7 +1470,7 @@ function TransmogSetModelMixin:OnMouseDown(button)
 	end
 
 	if button == "LeftButton" then
-		local sources = getSourceSlots(self.elementData.sourceData.primaryAppearances)
+		local sources = getSourceSlots(self.elementData.sourceData.primaryAppearances, self.elementData.setID)
 		ApplyOutfit(sources)
 		PlaySound(SOUNDKIT.UI_TRANSMOG_ITEM_CLICK);
 	end
