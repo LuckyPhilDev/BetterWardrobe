@@ -2299,8 +2299,9 @@ function TransmogWardrobeSetsMixin:RefreshCollectionEntries()
 	self.setsDataProvider:ClearSets();
 
 	local collectionElements = {};
-	local tab = TransmogFrame.WardrobeCollection:GetTab()
-	if tab == 6 then
+	local isExtraSetsFrame = (self == TransmogFrame.WardrobeCollection.TabContent.BW_ExtraSetsFrame)
+	local isBaseSetsFrame = (self == TransmogFrame.WardrobeCollection.TabContent.BW_SetsFrame2)
+	if isExtraSetsFrame then
 		local availableSets = addon.fullList -- self.setsDataProvider:GetAvailableSets();
 		for _index, availableSet in pairs(availableSets) do
 			if availableSet.setType ~= "Blizzard" then 
@@ -2330,7 +2331,7 @@ function TransmogWardrobeSetsMixin:RefreshCollectionEntries()
 			end
 		end
 
-	elseif tab == 5 then
+	elseif isBaseSetsFrame then
 		local availableSets = addon.fullList --self.setsDataProvider:GetAvailableSets();
 
 		for _index, availableSet in pairs(availableSets) do

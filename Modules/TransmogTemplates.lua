@@ -866,13 +866,12 @@ function addon:SearchSets(data)
 	local query = ""
 
 	if TransmogFrame:IsShown() then
-		local tab = TransmogFrame and TransmogFrame.WardrobeCollection:GetTab()
-		if not tab then return  false end
-
-		local query = TransmogFrame and TransmogFrame.WardrobeCollection.TabContent.BW_ExtraSetsFrame.SearchBox:GetText()  or ""
-		
-		if tab == 5 then
-			query = TransmogFrame and TransmogFrame.WardrobeCollection.TabContent.BW_SetsFrame2.SearchBox:GetText()  or ""
+		local setsFrame = TransmogFrame.WardrobeCollection.TabContent.BW_SetsFrame2
+		local extraSetsFrame = TransmogFrame.WardrobeCollection.TabContent.BW_ExtraSetsFrame
+		if setsFrame and setsFrame:IsShown() then
+			query = setsFrame.SearchBox:GetText() or ""
+		elseif extraSetsFrame and extraSetsFrame:IsShown() then
+			query = extraSetsFrame.SearchBox:GetText() or ""
 		end
 	else
 		query = BetterWardrobeCollectionFrameSearchBox and BetterWardrobeCollectionFrameSearchBox:GetText()  or ""
@@ -901,17 +900,11 @@ function TransmogSearchBoxMixin:UpdateSearch()
 		return;
 	end
 
-	local tab = TransmogFrame.WardrobeCollection:GetTab()
-
 	if self:GetText() == "" then
 		C_TransmogCollection.ClearSearch(self.searchType);
 		TransmogFrame.WardrobeCollection.TabContent.BW_ExtraSetsFrame:RefreshCollectionEntries()
 	else
-		if tab == 5 then
-			C_TransmogCollection.SetSearch(self.searchType, self:GetText());
-		else
-			TransmogFrame.WardrobeCollection.TabContent.BW_ExtraSetsFrame:RefreshCollectionEntries()
-		end
+		C_TransmogCollection.SetSearch(self.searchType, self:GetText());
 	end
 
 	-- Restart search tracking.
