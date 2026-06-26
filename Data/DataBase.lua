@@ -335,7 +335,7 @@ function BuildBlizzSets()
 				local subSet = false;
 				local subSetBaseID;
 				SET_INDEX[data.setID] = data
-				fullList[data.setID] = set
+				fullList[data.setID] = data
 
 
 
